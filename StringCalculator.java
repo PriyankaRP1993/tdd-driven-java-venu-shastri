@@ -23,12 +23,21 @@ public class StringCalculator {
     
     /**
      * Parses the input string and extracts numbers based on delimiters.
-     * CCN = 2 (if statement + return)
+     * CCN = 3 (if custom delimiter + if bracket notation + return)
      */
     private String parseNumbers(String input) {
         if (input.startsWith("//")) {
-            String delimiter = String.valueOf(input.charAt(2));
-            return input.substring(4).replace(delimiter, ",");
+            if (input.charAt(2) == '[') {
+                // Handle bracket notation for multi-character delimiters
+                int closeBracket = input.indexOf(']');
+                String delimiter = input.substring(3, closeBracket);
+                String numbers = input.substring(closeBracket + 2);
+                return numbers.replace(delimiter, ",");
+            } else {
+                // Handle single character delimiter
+                String delimiter = String.valueOf(input.charAt(2));
+                return input.substring(4).replace(delimiter, ",");
+            }
         }
         return input.replace("\n", ",");
     }
@@ -46,7 +55,10 @@ public class StringCalculator {
         
         for (String part : parts) {
             if (!part.trim().isEmpty()) {
-                sum += Integer.parseInt(part.trim());
+                int number = Integer.parseInt(part.trim());
+                if (number <= 1000) {
+                    sum += number;
+                }
             }
         }
         
